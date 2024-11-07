@@ -19,13 +19,17 @@ def userdata(db:session = Depends(get_db)):
     
 @router.post("/signin", status_code=201, response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db:session = Depends(get_db)):
-    hash_password = utils.hash(user.password)
-    user.password = hash_password
+    try:
+        hash_password = utils.hash(user.password)
+        user.password = hash_password
 
-    new_user = models.Users( **user.dict())
-    db.add(new_user)
-    db.commit()
-    return new_user
+        new_user = models.Users( **user.model_dump())
+        db.add(new_user)
+        db.commit()
+        return new_user
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="User already exists")
+    
     # db.refresh(new_user)
         
 @router.get(('/user/{id}'), response_model=schemas.UserOut)
@@ -34,5 +38,4 @@ def get_user(id:int, db:session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=404,
         detail=f"user with id: {id} does not exist")
-
     return user

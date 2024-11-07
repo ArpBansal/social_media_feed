@@ -30,7 +30,7 @@ class Vote(Base):
   __tablename__ = 'like_dislike'
   user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), primary_key=True)
   post_id = Column(Integer, ForeignKey('posts.id', ondelete="CASCADE"), primary_key=True)
-  choice = Column(Integer, CheckConstraint('vote IN (1, -1)'))
+  choice = Column(Integer, CheckConstraint('choice IN (1, -1)'))
 #   __table_args__=(primaryKeyConstraint(user_id, post_id))
 
 
@@ -41,8 +41,3 @@ class Comments(Base):
     post_id = Column(Integer, ForeignKey('posts.id', ondelete="CASCADE"))
     comment = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
-
-
-# Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-# Set-ExecutionPolicy RemoteSigned
-# venv\Scripts\Activate.ps1
